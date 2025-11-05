@@ -398,11 +398,11 @@ MonoBehaviour:
   carBody: {fileID: 622336118}
   tireTransform: {fileID: 99801415}
   suspensionRestDist: 0.5
-  springStrength: 20000
-  springDamper: 1500
+  springStrength: 15
+  springDamper: 0.5
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!58 &99801417
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -410,7 +410,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99801413}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -450,7 +450,7 @@ GameObject:
   - component: {fileID: 499798924}
   - component: {fileID: 499798926}
   - component: {fileID: 499798927}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: bump1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 404970397766dc143a5a54e4bb0dadfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::moveobject
-  speed: 3
+  speed: 4
 --- !u!1 &623963111
 GameObject:
   m_ObjectHideFlags: 3
@@ -830,7 +830,7 @@ GameObject:
   - component: {fileID: 1418696878}
   - component: {fileID: 1418696880}
   - component: {fileID: 1418696881}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: bump2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -988,7 +988,7 @@ GameObject:
   - component: {fileID: 1763105332}
   - component: {fileID: 1763105331}
   - component: {fileID: 1763105330}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1128,7 +1128,7 @@ GameObject:
   - component: {fileID: 1791600902}
   - component: {fileID: 1791600904}
   - component: {fileID: 1791600905}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: bump3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1374,7 +1374,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1796070288}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -1418,11 +1418,11 @@ MonoBehaviour:
   carBody: {fileID: 622336118}
   tireTransform: {fileID: 1796070290}
   suspensionRestDist: 0.5
-  springStrength: 20000
-  springDamper: 1500
+  springStrength: 15
+  springDamper: 0.5
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!1 &2007448926
 GameObject:
   m_ObjectHideFlags: 0
