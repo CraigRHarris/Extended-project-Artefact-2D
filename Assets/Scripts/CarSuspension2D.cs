@@ -26,13 +26,13 @@ public class CarSuspension2D : MonoBehaviour
                 // How much the suspension is compressed
                 float offset = suspensionRestDist - hit.distance;
 
-                // Get the tire’s world velocity
+                // Get the tires world velocity
                 Vector2 tireWorldVel = carBody.GetPointVelocity(tireTransform.position);
 
                 // Velocity along the spring direction (project onto spring direction)
                 float vel = Vector2.Dot(springDir, tireWorldVel);
 
-                // Calculate spring force (Hooke’s Law) with damping
+                // Calculate spring force (Hookes Law) with damping
                 float forceMag = (offset * springStrength) - (vel * springDamper);
 
                 // Apply force upwards at tire position
@@ -40,7 +40,7 @@ public class CarSuspension2D : MonoBehaviour
             }
         }
 
-        private void OnDrawGizmos()
+        void OnDrawGizmos()
         {
             // Draw ray in editor
             if (tireTransform != null)
