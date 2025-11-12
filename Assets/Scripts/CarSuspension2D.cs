@@ -10,9 +10,10 @@ public class CarSuspension2D : MonoBehaviour
         public LayerMask groundLayer;
 
         private float forceMag;
+        private float currentDist;  // current suspension distance
 
-        private void FixedUpdate()
-        {
+    private void FixedUpdate()
+    {
             // Direction of suspension -local up of the tire
             Vector2 springDir = tireTransform.up;
 
@@ -41,8 +42,22 @@ public class CarSuspension2D : MonoBehaviour
 
                 // Apply force upwards at tire position
                 carBody.AddForceAtPosition(springDir * forceMag, tireTransform.position);
+
+                // Set wheel position along spring direction
+                currentDist = hit.distance;
+
             }
+        else
+        {
+            // Not grounded, wheel fully extended
+            currentDist = suspensionRestDist;
+            forceMag = 0;
         }
+
+        // Update tire visual position
+        tireTransform.position = rayOrigin - springDir * currentDist;
+
+    }
 
         void OnDrawGizmos()
         {
