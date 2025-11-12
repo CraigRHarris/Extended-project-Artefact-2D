@@ -6,12 +6,15 @@ public class moveobject : MonoBehaviour
 {
     public float speed = 5f; // set default speed
 
-    // Update is called once per frame
-    void Update()
+    public Rigidbody2D rb;
+
+    private void Awake()
     {
-       // if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.Translate(Vector2.left * speed * Time.deltaTime);
-        }
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    void FixedUpdate()
+    {
+        rb.AddForceX(-speed);
     }
 }
