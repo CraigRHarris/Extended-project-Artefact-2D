@@ -30,16 +30,17 @@ public class CarSuspension2D : MonoBehaviour
         {
             Debug.DrawLine(rayOrigin, hit.point, Color.green, 0.1f);
             //Debug.DrawLine(tireTransform.position, tireTransform.position - tireTransform.up * forceMag, Color.green, 0.1f);
+            
             // How much the suspension is compressed
             float offset = suspensionRestDist - hit.distance;
 
-            // Get the tires world velocity
-            Vector2 tireWorldVel = carBody.GetPointVelocity(rayOrigin);
+            // Get the tires world velocity (transform of the suspension to find the defualt point)
+            Vector2 tireWorldVel = carBody.GetPointVelocity(rayOrigin); //carBody.GetPointVelocity is used for each corner as the center of mass will be different for each suspension. not carbody.velocity as that is for center of mess for the body of the car.
 
-            // Velocity along the spring direction - project onto spring direction
+            // Velocity along the spring direction 
             float vel = Vector2.Dot(springDir, tireWorldVel);
 
-            // Calculate spring force with damping
+            // Calculate spring force with damping (calucation of suspension working together as a whole)
             forceMag = (offset * springStrength) - (vel * springDamper);
 
             // Apply force upwards at tire position
