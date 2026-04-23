@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public struct SuspensionForce
@@ -28,6 +29,7 @@ public class CarSuspension2D : MonoBehaviour
     private float currentDist;  // current suspension distance
 
     public Vector2[] rayOffsets;
+    public Vector2[] rayHitPositions;
 
     private Vector2 startPos;
 
@@ -35,9 +37,11 @@ public class CarSuspension2D : MonoBehaviour
     {
         startPos = transform.position;
         lineRenderer = GetComponent<LineRenderer>();
+
+        rayHitPositions = new Vector2[rayOffsets.Length];
     }
 
-    private SuspensionForce CalculateSuspensionForce(Vector2 rayOffset)
+    private SuspensionForce CalculateSuspensionForce(Vector2 rayOffset, int index)
     {
         SuspensionForce suspensionForce = new SuspensionForce(Vector2.zero, suspensionRestDist);
         Vector2 springDir = tireTransform.up;
@@ -50,13 +54,16 @@ public class CarSuspension2D : MonoBehaviour
         // raycast down to detect the ground
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDir, wheelRadius, groundLayer);
 
+        rayHitPositions[index] = new Vector2(-100, -100);
+
         if (hit)
         {
+            rayHitPositions[index] = hit.point;
             Debug.DrawLine(rayOrigin, hit.point, Color.green, 0.1f);
             //Debug.DrawLine(tireTransform.position, tireTransform.position - tireTransform.up * forceMag, Color.green, 0.1f);
-            
+
             // How much the suspension is compressed
-            float offset = Mathf.Abs(wheelRadius - suspensionRestDist - hit.distance);
+            float offset = suspensionRestDist - hit.distance;
 
             // Get the tires world velocity (transform of the suspension to find the defualt point)
             Vector2 tireWorldVel = carBody.GetPointVelocity(rayOrigin); //carBody.GetPointVelocity is used for each corner as the center of mass will be different for each suspension. not carbody.velocity as that is for center of mess for the body of the car.
@@ -67,10 +74,12 @@ public class CarSuspension2D : MonoBehaviour
             // Calculate spring force with damping (calucation of suspension working together as a whole)
             forceMag = (offset * springStrength) - (vel * springDamper);
 
+            Debug.Log("(" + gameObject.name + "[" + index + "]) " + offset + ", " + forceMag);
+
             // Apply force upwards at tire position
             //carBody.AddForceAtPosition(springDir * forceMag, tireTransform.position);
 
-            Debug.DrawLine(rayOrigin, new Vector3(rayOrigin.x, rayOrigin.y) + tireTransform.up * forceMag, Color.yellow, 0.1f);
+            //Debug.DrawLine(rayOrigin, new Vector3(rayOrigin.x, rayOrigin.y) + tireTransform.up * forceMag, Color.yellow, 0.1f);
 
             suspensionForce.distance = offset;
             suspensionForce.force = springDir * forceMag;
@@ -96,28 +105,25 @@ public class CarSuspension2D : MonoBehaviour
         Vector2 accumulatedForce = Vector2.zero;
         float shortestDistance = suspensionRestDist;
 
-        foreach (var offset in rayOffsets)// for each raycast at Calculate the suspension forces 
-        {
-            var suspensionForce = CalculateSuspensionForce(offset);
-            if(suspensionForce.distance < shortestDistance)
-                shortestDistance = suspensionForce.distance;
+        int i = 0;
+        var suspensionForce = CalculateSuspensionForce(new Vector2(0.0f, 0.0f), i++);
+        carBody.AddForceAtPosition(suspensionForce.force, tireTransform.position);
+        //foreach (var offset in rayOffsets)// for each raycast at Calculate the suspension forces 
+        //{
+        //    var suspensionForce = CalculateSuspensionForce(offset, i++);
+        //    if(suspensionForce.distance < shortestDistance)
+        //        shortestDistance = suspensionForce.distance;
 
-            accumulatedForce += suspensionForce.force;
-        }
-        //making the length of the raycast for position
-        accumulatedForce /= rayOffsets.Length;
-        carBody.AddForceAtPosition(accumulatedForce, tireTransform.position);
+        //    accumulatedForce += suspensionForce.force;
+        //}
+        ////making the length of the raycast for position
+        //accumulatedForce /= rayOffsets.Length;
+        //carBody.AddForceAtPosition(accumulatedForce, tireTransform.position);
 
-        Debug.Log("(" + gameObject.name + ") " + shortestDistance.ToString());
-        Debug.Log("(" + gameObject.name + ") " + transform.localPosition.y + " - " + (transform.localPosition.y - shortestDistance));
+        //Debug.Log("(" + gameObject.name + ") " + shortestDistance.ToString());
+        //Debug.Log("(" + gameObject.name + ") " + transform.localPosition.y + " - " + (transform.localPosition.y - shortestDistance));
 
-        if (shortestDistance < suspensionRestDist)
-        {
-            //paramaters for the suspension spring
-            transform.localPosition = new Vector3(transform.localPosition.x,
-                                                  transform.localPosition.y - shortestDistance,
-                                                  transform.localPosition.z);
-        }
+       
         // Update tire visual position
         //tireTransform.position = rayOrigin - springDir * currentDist;
         lineRenderer.SetPosition(0, suspensionTopTransform.position);
@@ -126,11 +132,20 @@ public class CarSuspension2D : MonoBehaviour
 
         void OnDrawGizmos()
         {
-            // Draw ray in editor
-            //if (tireTransform != null)
-            //{
-            //    Gizmos.color = Color.yellow;
-            //    Gizmos.DrawLine(tireTransform.position, tireTransform.position - tireTransform.up * forceMag);
-            //}
-        }
+            Vector2 invalidPos = new Vector2(-100, -100);
+
+            foreach (var hitPos in rayHitPositions)
+            {
+                if (hitPos == invalidPos) continue;
+
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireSphere(hitPos, 0.05f);
+            }
+        // Draw ray in editor
+        //if (tireTransform != null)
+        //{
+        //    Gizmos.color = Color.yellow;
+        //    Gizmos.DrawLine(tireTransform.position, tireTransform.position - tireTransform.up * forceMag);
+        //}
+    }
 }
